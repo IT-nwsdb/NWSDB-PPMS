@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // This PPMS build does not use Firebase Authentication.
+    // These rules allow public access only to the PPMS documents used by the app.
+    match /ppms_modules/{docId} {
+      allow read, write: if docId in ['rh', 'es', 'us_settings'];
+    }
+
+    match /ppms_us_years/{yearId} {
+      allow read, write: if yearId.matches('^[0-9]{4}$');
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
